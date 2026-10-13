@@ -1,0 +1,17 @@
+name: ROS2 Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up ROS 2
+        uses: ros-tooling/action-setup-ros@v0.7
+        with:
+          ros-distro: humble
+      - name: Run Tests
+        uses: ros-tooling/action-ros-ci@0.3
+        with:
+          package-name: mybestcontroller
