@@ -7,7 +7,10 @@ import rclpy
 from geometry_msgs.msg import Twist
 from lab2_interfaces.srv import A408082
 from rclpy.node import Node
-from turtlesim_msgs.msg import Pose
+try:
+    from turtlesim_msgs.msg import Pose
+except ImportError:
+    from turtlesim.msg import Pose
 
 
 class ServiceClient(Node):
