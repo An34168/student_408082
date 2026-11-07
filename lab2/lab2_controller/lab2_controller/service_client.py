@@ -17,9 +17,6 @@ class ServiceClient(Node):
             A408082, 'calculate_navigation'
         )
 
-        while not self.client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('Esperando al servidor...')
-
         self.pose_sub = self.create_subscription(
             Pose, '/turtle1/pose', self.pose_callback, 10
         )
@@ -33,6 +30,8 @@ class ServiceClient(Node):
         self.target_angle = 0.0
         self.goal_reached = False
         self.state = "REQUEST"
+        self.stop_count = 0
+        self.finished = False
 
         self.timer = self.create_timer(0.1, self.control_loop)
 
@@ -40,6 +39,10 @@ class ServiceClient(Node):
         self.current_pose = msg
 
     def send_request(self):
+        if not self.client.service_is_ready():
+            self.get_logger().info('Esperando al servidor...')
+            return
+
         self.cmd_pub.publish(Twist())
 
         req = A408082.Request()
@@ -91,6 +94,14 @@ class ServiceClient(Node):
                 self.cmd_pub.publish(twist)
             else:
                 self.cmd_pub.publish(Twist())
+                self.stop_count = 0
+                self.state = "STOPPING_ROTATION"
+
+        elif self.state == "STOPPING_ROTATION":
+            self.cmd_pub.publish(Twist())
+
+            if (abs(self.current_pose.linear_velocity) < 0.01 and
+                    abs(self.current_pose.angular_velocity) < 0.01):
                 self.state = "MOVE"
 
         elif self.state == "MOVE":
@@ -102,11 +113,19 @@ class ServiceClient(Node):
                 )
                 self.cmd_pub.publish(twist)
 
-            self.state = "REQUEST"
+            self.state = "STOPPING"
+
+        elif self.state == "STOPPING":
+            self.cmd_pub.publish(Twist())
+
+            if (abs(self.current_pose.linear_velocity) < 0.01 and
+                    abs(self.current_pose.angular_velocity) < 0.01):
+                self.state = "REQUEST"
 
         elif self.state == "FINISHED":
             self.cmd_pub.publish(Twist())
             self.timer.cancel()
+            self.finished = True
 
 
 def main(args=None):
@@ -118,8 +137,11 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        node.cmd_pub.publish(Twist())
+        if rclpy.ok():
+            node.cmd_pub.publish(Twist())
+
         node.destroy_node()
+
         if rclpy.ok():
             rclpy.shutdown()
 
