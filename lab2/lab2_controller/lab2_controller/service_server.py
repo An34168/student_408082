@@ -8,7 +8,7 @@ class ServiceServer(Node):
     def __init__(self):
         super().__init__('service_server')
         self.srv = self.create_service(A408082, 'calculate_navigation', self.navigation_callback)
-        self.targets = [(3.0, 3.0), (8.0, 3.0), (8.0, 8.0), (3.0, 8.0)]
+        self.targets = [(2.0, 3.0), (4.0, 2.0), (5.0, 4.0)]
         self.current_target_index = 0
         self.get_logger().info(f"Servidor listo. Primer objetivo: {self.targets[self.current_target_index]}")
 
