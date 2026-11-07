@@ -1,0 +1,6 @@
+float64 x_goal
+float64 y_goal
+---
+bool success
+---
+float64 distance_error
