@@ -2,14 +2,16 @@
 #!/usr/bin/env python3
 
 import math
+
 import rclpy
-from rclpy.node import Node
-from turtlesim_msgs.msg import Pose
 from geometry_msgs.msg import Twist
 from lab2_interfaces.srv import A408082
+from rclpy.node import Node
+from turtlesim_msgs.msg import Pose
 
 
 class ServiceClient(Node):
+
     def __init__(self):
         super().__init__('service_client')
 
@@ -29,7 +31,7 @@ class ServiceClient(Node):
         self.target_distance = 0.0
         self.target_angle = 0.0
         self.goal_reached = False
-        self.state = "REQUEST"
+        self.state = 'REQUEST'
         self.stop_count = 0
         self.finished = False
 
@@ -49,7 +51,7 @@ class ServiceClient(Node):
         req.x_current = self.current_pose.x
         req.y_current = self.current_pose.y
 
-        self.state = "WAITING"
+        self.state = 'WAITING'
         future = self.client.call_async(req)
         future.add_done_callback(self.handle_response)
 
@@ -58,7 +60,7 @@ class ServiceClient(Node):
             res = future.result()
         except Exception as e:
             self.get_logger().error(f'Error del servicio: {e}')
-            self.state = "REQUEST"
+            self.state = 'REQUEST'
             return
 
         self.target_distance = res.distance
@@ -66,24 +68,24 @@ class ServiceClient(Node):
         self.goal_reached = res.success
 
         if self.goal_reached and self.target_distance == 0.0:
-            self.state = "FINISHED"
+            self.state = 'FINISHED'
             self.get_logger().info('Mision completada')
         elif self.goal_reached:
-            self.state = "REQUEST"
+            self.state = 'REQUEST'
         else:
-            self.state = "ROTATE"
+            self.state = 'ROTATE'
 
     def control_loop(self):
         if self.current_pose is None:
             return
 
-        if self.state == "REQUEST":
+        if self.state == 'REQUEST':
             self.send_request()
 
-        elif self.state == "WAITING":
+        elif self.state == 'WAITING':
             return
 
-        elif self.state == "ROTATE":
+        elif self.state == 'ROTATE':
             err = self.target_angle - self.current_pose.theta
             err = math.atan2(math.sin(err), math.cos(err))
 
@@ -95,16 +97,16 @@ class ServiceClient(Node):
             else:
                 self.cmd_pub.publish(Twist())
                 self.stop_count = 0
-                self.state = "STOPPING_ROTATION"
+                self.state = 'STOPPING_ROTATION'
 
-        elif self.state == "STOPPING_ROTATION":
+        elif self.state == 'STOPPING_ROTATION':
             self.cmd_pub.publish(Twist())
 
             if (abs(self.current_pose.linear_velocity) < 0.01 and
                     abs(self.current_pose.angular_velocity) < 0.01):
-                self.state = "MOVE"
+                self.state = 'MOVE'
 
-        elif self.state == "MOVE":
+        elif self.state == 'MOVE':
             twist = Twist()
 
             if self.target_distance > 0.1:
@@ -113,16 +115,16 @@ class ServiceClient(Node):
                 )
                 self.cmd_pub.publish(twist)
 
-            self.state = "STOPPING"
+            self.state = 'STOPPING'
 
-        elif self.state == "STOPPING":
+        elif self.state == 'STOPPING':
             self.cmd_pub.publish(Twist())
 
             if (abs(self.current_pose.linear_velocity) < 0.01 and
                     abs(self.current_pose.angular_velocity) < 0.01):
-                self.state = "REQUEST"
+                self.state = 'REQUEST'
 
-        elif self.state == "FINISHED":
+        elif self.state == 'FINISHED':
             self.cmd_pub.publish(Twist())
             self.timer.cancel()
             self.finished = True
