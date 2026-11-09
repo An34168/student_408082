@@ -1,18 +1,18 @@
+
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch_ros.actions import Node
 from launch.substitutions import Command
+from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
     package_dir = get_package_share_directory('my_best_model')
 
-    xacro_file = os.path.join(
-        package_dir, 'urdf', 'robot_model.xacro'
-    )
+    xacro_file = os.path.join(package_dir, 'urdf', 'robot_model.xacro')
+    rviz_config = os.path.join(package_dir, 'config', 'robot_view.rviz')
 
     robot_description = ParameterValue(
         Command(['xacro ', xacro_file]),
@@ -38,16 +38,8 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
+            arguments=['-d', rviz_config],
             output='screen'
-        ),
-
-	Node(
-    	    package='rviz2',
-    	    executable='rviz2',
-            output='screen',
-            arguments=[
-                '-d',
-                '/home/user/ROS_2026/student_408082/lab3/my_best_model/config/robot_view.rviz'
-            ]
         )
-])
+    ])
+
