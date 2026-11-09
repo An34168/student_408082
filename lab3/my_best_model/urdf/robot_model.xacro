@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="my_best_model">
+
+    <!-- Base principal del robot -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.20 0.14 0.12"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.1 0.3 0.9 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+<link name="arm_link_1">
+    <visual>
+        <geometry>
+            <cylinder radius="0.025" length="0.15"/>
+        </geometry>
+        <material name="orange">
+            <color rgba="1.0 0.5 0.0 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_1" type="prismatic">
+    <parent link="base_link"/>
+    <child link="arm_link_1"/>
+
+    <origin xyz="0 0 0.14" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+
+    <limit lower="0.0"
+           upper="0.12"
+           effort="100"
+           velocity="0.1"/>
+</joint>
+
+<link name="arm_link_2">
+    <visual>
+        <origin xyz="0 0 0.10" rpy="0 0 0"/>
+        <geometry>
+            <cylinder radius="0.02" length="0.20"/>
+        </geometry>
+        <material name="green">
+            <color rgba="0.0 0.8 0.3 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_2" type="revolute">
+    <parent link="arm_link_1"/>
+    <child link="arm_link_2"/>
+
+    <origin xyz="0 0 0.075" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit lower="-1.57"
+           upper="1.57"
+           effort="100"
+           velocity="1.0"/>
+</joint>
+
+<link name="arm_link_3">
+    <visual>
+        <origin xyz="0 0 0.075" rpy="0 0 0"/>
+        <geometry>
+            <cylinder radius="0.018" length="0.15"/>
+        </geometry>
+        <material name="purple">
+            <color rgba="0.6 0.2 0.9 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_3" type="revolute">
+    <parent link="arm_link_2"/>
+    <child link="arm_link_3"/>
+
+    <origin xyz="0 0 0.20" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit lower="-1.57"
+           upper="1.57"
+           effort="100"
+           velocity="1.0"/>
+</joint>
+
+<link name="left_wheel">
+    <visual>
+        <geometry>
+            <cylinder radius="0.045" length="0.025"/>
+        </geometry>
+        <material name="black">
+            <color rgba="0.1 0.1 0.1 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+
+    <origin xyz="0 0.082 -0.035" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+
+    <limit effort="10" velocity="10"/>
+</joint>
+
+<link name="right_wheel">
+    <visual>
+        <geometry>
+            <cylinder radius="0.045" length="0.025"/>
+        </geometry>
+        <material name="black">
+            <color rgba="0.1 0.1 0.1 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+
+    <origin xyz="0 -0.082 -0.035" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+
+    <limit effort="10" velocity="10"/>
+</joint>
+</robot>
+

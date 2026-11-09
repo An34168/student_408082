@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://ros.org" schematypens="http://w3.org"?>
+<package format3>
+  <name>my_best_model</name>
+  <version>0.0.0</version>
+  <description>Laboratorio 3 - Variante 2</description>
+  <maintainer email="student@todo.todo">student</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher_gui</depend>
+  <depend>rviz2</depend>
+  <depend>xacro</depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
