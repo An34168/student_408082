@@ -100,10 +100,10 @@
 </link>
 
 <joint name="left_wheel_joint" type="continuous">
-    <parent link="arm_link_3"/>
+    <parent link="base_link"/>
     <child link="left_wheel"/>
 
-    <origin xyz="0 0 -0.010" rpy="0 0 0"/>
+    <origin xyz="0 0.082 -0.035" rpy="1.5708 0 0"/>
     <axis xyz="0 0 1"/>
 
     <limit effort="10" velocity="10"/>
@@ -121,13 +121,69 @@
 </link>
 
 <joint name="right_wheel_joint" type="continuous">
-    <parent link="left_wheel"/>
+    <parent link="base_link"/>
     <child link="right_wheel"/>
 
-    <origin xyz="0 0 0.09" rpy="0 0 0"/>
+    <origin xyz="0 -0.082 -0.035" rpy="1.5708 0 0"/>
     <axis xyz="0 0 1"/>
 
     <limit effort="10" velocity="10"/>
 </joint>
+<!-- Enlaces adicionales del manipulador -->
+
+<link name="arm_link_4">
+    <visual>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+        <geometry>
+            <cylinder radius="0.016" length="0.05"/>
+        </geometry>
+        <material name="yellow">
+            <color rgba="1.0 0.9 0.1 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_4_fixed" type="fixed">
+    <parent link="arm_link_3"/>
+    <child link="arm_link_4"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+</joint>
+
+<link name="arm_link_5">
+    <visual>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+        <geometry>
+            <cylinder radius="0.014" length="0.05"/>
+        </geometry>
+        <material name="cyan">
+            <color rgba="0.0 0.8 0.9 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_5_fixed" type="fixed">
+    <parent link="arm_link_4"/>
+    <child link="arm_link_5"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+</joint>
+
+<link name="arm_link_6">
+    <visual>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+        <geometry>
+            <cylinder radius="0.012" length="0.05"/>
+        </geometry>
+        <material name="white">
+            <color rgba="0.9 0.9 0.9 1.0"/>
+        </material>
+    </visual>
+</link>
+
+<joint name="joint_6_fixed" type="fixed">
+    <parent link="arm_link_5"/>
+    <child link="arm_link_6"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+</joint>
+
 </robot>
 
